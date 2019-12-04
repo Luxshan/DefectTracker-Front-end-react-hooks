@@ -42,7 +42,7 @@ const divStyle = {
 export default function EditFeatureForm({ id, onFinish }) {
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    id: "",
+    id: 1,  //manual value... need to get id from featureCustomToolbarSelect
     featureName: "",
     featureDescription: ""
   });
@@ -51,7 +51,7 @@ export default function EditFeatureForm({ id, onFinish }) {
   const [message, setMessage] = React.useState("");
   useEffect(() => {
     console.log(values.id); // issue getting the id
-    Axios.get(`http://localhost:8080/feature/${id()}`)
+    Axios.get(`http://localhost:8080/feature/${values.id}`)
       .then(response => {
         console.log(response);
         let result = response.data;
@@ -78,7 +78,7 @@ export default function EditFeatureForm({ id, onFinish }) {
 
   const handleSubmit = event => {
     event.preventDefault();
-    Axios.put(`http://localhost:8080/feature`, values)
+    Axios.put(`http://localhost:8080/feature/${values.id}`, values)
       .then(response => {
         console.log(response);
         setShowResult("alert alert-success");

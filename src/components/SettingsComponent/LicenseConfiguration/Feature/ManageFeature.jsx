@@ -100,6 +100,7 @@ export default function ManageFeature() {
 
   const getId = () => {
     return values.id;
+    
   };
 
   useEffect(() => {
@@ -141,7 +142,7 @@ export default function ManageFeature() {
       allRows.forEach(row => {
         const dataRow = feature[row.dataIndex];
         values.id = dataRow["id"];
-        console.log(values.id);
+        console.log(values.id + " kaja");
       });
     }
   };

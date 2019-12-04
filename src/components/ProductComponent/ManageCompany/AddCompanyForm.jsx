@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect }from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -16,6 +16,8 @@ import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from "@material-ui/pickers";
+import Axios from "axios";
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,8 +76,12 @@ const useStyles = makeStyles(theme => ({
     width: "230px"
   }
 }));
+const divStyle = {
+  marginRight: "22px",
+  marginTop: "10px"
+};
 
-export default function AddCompanyForm() {
+export default function AddCompanyForm({ onFinish }) {
   const classes = useStyles();
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
@@ -86,6 +92,21 @@ export default function AddCompanyForm() {
   const [selectedDate, setSelectedDate] = React.useState(
     new Date("2019-10-24T21:11:54")
   );
+
+  const [license, setLicenseType] = React.useState([]);
+
+  // useEffect(() => {
+  //   Axios.get("http://localhost:8080/license")
+  //     .then(response => {
+  //       console.log(response.data);
+  //       setLicenseType(response.data);
+  //     })
+  //     .catch(error => {
+  //       console.log(error);
+  //       // setShowResult("alert alert-danger");
+  //       // setMessage("Failed to Retrive Data");
+  //     });
+  // });
 
   const handleDateChange = date => {
     setSelectedDate(date);

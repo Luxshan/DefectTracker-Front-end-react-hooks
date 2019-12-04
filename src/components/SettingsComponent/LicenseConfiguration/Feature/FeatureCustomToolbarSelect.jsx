@@ -30,7 +30,11 @@ export default function LicenseCustomToolbarSelect({
   id,
   onEdit,
   onDelete
+ 
 }) {
+  
+  
+  console.log({id});
   const classes = useStyles();
   const [openDelete, setOpenDelete] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -76,7 +80,8 @@ export default function LicenseCustomToolbarSelect({
         <DialogTitle id="edit-project-title">Edit Feature</DialogTitle>
         <Divider />
         <DialogContent>
-          <EditFeatureForm />
+          <EditFeatureForm onFinish={handleEditClose} id={id}/>
+          {/* <EditFeatureForm id={`${id}`} /> */}
         </DialogContent>
       </Dialog>
 

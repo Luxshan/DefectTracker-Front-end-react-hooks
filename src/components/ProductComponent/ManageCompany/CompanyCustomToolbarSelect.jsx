@@ -14,7 +14,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 import ViewCompanyForm from "./ViewCompanyForm";
-
+import EditCompanyForm from './EditCompanyForm';
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -28,9 +28,14 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function CompanyCustomToolbarSelect() {
+export default function CompanyCustomToolbarSelect({
+    id,
+    onEdit,
+    onDelete
+}) {
   const classes = useStyles();
   const [openView, setOpenView] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
 
   const handleViewOpen = () => {
@@ -47,6 +52,15 @@ export default function CompanyCustomToolbarSelect() {
 
   const handleDeleteClose = () => {
     setOpenDelete(false);
+  };
+
+  const handleEditOpen = () => {
+    setOpenEdit(true);
+  };
+
+  const handleEditClose = () => {
+    setOpenEdit(false);
+    onEdit();
   };
   return (
     <div>
@@ -90,11 +104,24 @@ export default function CompanyCustomToolbarSelect() {
           size="small"
           component={Link}
           to={"/product-administration/manage-company/edit-company"}
+          // onClick={handleEditOpen}
         >
           <EditIcon />
         </Fab>
       </Tooltip>
-
+      <Dialog
+        open={openEdit}
+        onClose={handleEditClose}
+        aria-labelledby="edit-severity-title"
+        fullWidth={true}
+        maxWidth={"sm"}
+      >
+        <DialogTitle id="edit-severity-title">Edit Company</DialogTitle>
+        <Divider />
+        <DialogContent>
+          <EditCompanyForm onFinish={handleEditClose} id={id} />
+        </DialogContent>
+      </Dialog>
       <Tooltip title={"Delete"}>
         <Fab
           color="default"
@@ -127,7 +154,7 @@ export default function CompanyCustomToolbarSelect() {
           </Button>
           <Button
             variant="contained"
-            onClick={handleDeleteClose}
+            onClick={onDelete}
             color="primary"
           >
             Delete
