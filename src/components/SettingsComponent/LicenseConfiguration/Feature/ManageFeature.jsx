@@ -53,26 +53,6 @@ const columns = [
   }
 ];
 
-// const data = [
-//   {
-//     FeatureId: "F-101",
-//     FeatureName: "Manage 5 Projects",
-//     FeatureDescription: "Company can manage only 5 projects"
-//   }
-// ];
-
-// const options = {
-//   filterType: "checkbox",
-//   selectableRows: "single",
-//   selectableRowsOnClick: true,
-//   responsive: "scrollMaxHeight",
-//   customToolbar: () => {
-//     return <FeatureCustomToolbar />;
-//   },
-//   customToolbarSelect: () => {
-//     return <FeatureCustomToolbarSelect />;
-//   }
-// };
 
 export default function ManageFeature() {
   const classes = useStyles();
@@ -142,7 +122,7 @@ export default function ManageFeature() {
       allRows.forEach(row => {
         const dataRow = feature[row.dataIndex];
         values.id = dataRow["id"];
-        console.log(values.id + " kaja");
+        console.log(values.id);
       });
     }
   };

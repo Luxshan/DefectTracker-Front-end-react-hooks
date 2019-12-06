@@ -72,7 +72,7 @@ export default function DefectSeverityCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="edit-severity-title">Edit Severity</DialogTitle>
+        <DialogTitle id="edit-severity-title">Edit Defect Severity</DialogTitle>
         <Divider />
         <DialogContent>
           <EditDefectSeverityForm onFinish={handleEditClose} id={id} />
@@ -98,7 +98,9 @@ export default function DefectSeverityCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"xs"}
       >
-        <DialogTitle id="delete-severity-title">Delete Severity</DialogTitle>
+        <DialogTitle id="delete-severity-title">
+          Delete Defect Severity
+        </DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

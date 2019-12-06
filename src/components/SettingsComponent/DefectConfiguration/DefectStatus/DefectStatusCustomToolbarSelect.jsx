@@ -26,7 +26,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function DefectStatusCustomToolbarSelect() {
+export default function DefectStatusCustomToolbarSelect({
+  id,
+  onEdit,
+  onDelete
+}) {
   const classes = useStyles();
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -37,6 +41,7 @@ export default function DefectStatusCustomToolbarSelect() {
 
   const handleEditClose = () => {
     setOpenEdit(false);
+    onEdit();
   };
 
   const handleDeleteOpen = () => {
@@ -64,14 +69,14 @@ export default function DefectStatusCustomToolbarSelect() {
       <Dialog
         open={openEdit}
         onClose={handleEditClose}
-        aria-labelledby="edit-project-title"
+        aria-labelledby="edit-status-title"
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="edit-project-title">Edit Status</DialogTitle>
+        <DialogTitle id="edit-status-title">Edit Defect Status</DialogTitle>
         <Divider />
         <DialogContent>
-          <EditDefectStatusForm />
+          <EditDefectStatusForm onFinish={handleEditClose} id={id} />
         </DialogContent>
       </Dialog>
 
@@ -90,11 +95,11 @@ export default function DefectStatusCustomToolbarSelect() {
       <Dialog
         open={openDelete}
         onClose={handleDeleteClose}
-        aria-labelledby="delete-project-title"
+        aria-labelledby="delete-status-title"
         fullWidth={true}
         maxWidth={"xs"}
       >
-        <DialogTitle id="delete-project-title">Delete Status</DialogTitle>
+        <DialogTitle id="delete-status-title">Delete Defect Status</DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
@@ -105,11 +110,7 @@ export default function DefectStatusCustomToolbarSelect() {
           <Button onClick={handleDeleteClose} color="primary">
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleDeleteClose}
-            color="primary"
-          >
+          <Button variant="contained" onClick={onDelete} color="primary">
             Delete
           </Button>
         </DialogActions>

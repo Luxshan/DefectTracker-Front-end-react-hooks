@@ -104,7 +104,7 @@ export default function EditDefectSeverityForm({ id, onFinish }) {
           <TextField
             required
             id="severity-name"
-            label="Severity"
+            label="Defect Severity"
             className={classes.textField}
             value={values.name}
             onChange={handleChange("name")}
@@ -114,7 +114,7 @@ export default function EditDefectSeverityForm({ id, onFinish }) {
           <TextField
             required
             id="severity-desc"
-            label="Description"
+            label="Severity Description"
             className={classes.textField}
             value={values.description}
             onChange={handleChange("description")}

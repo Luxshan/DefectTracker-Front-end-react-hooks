@@ -65,6 +65,7 @@ export default function LicenseCustomToolbarSelect({
           className={classes.fab}
           size="small"
           onClick={handleEditOpen}
+          to={"/settings/license-configuration/manage-feature"}
         >
           <EditIcon />
         </Fab>
@@ -81,7 +82,7 @@ export default function LicenseCustomToolbarSelect({
         <Divider />
         <DialogContent>
           <EditFeatureForm onFinish={handleEditClose} id={id}/>
-          {/* <EditFeatureForm id={`${id}`} /> */}
+          
         </DialogContent>
       </Dialog>
 

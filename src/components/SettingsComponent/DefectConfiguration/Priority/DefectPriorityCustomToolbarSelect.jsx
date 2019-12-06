@@ -73,7 +73,7 @@ export default function DefectPriorityCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="edit-priority-title">Edit Priority</DialogTitle>
+        <DialogTitle id="edit-priority-title">Edit Defect Priority</DialogTitle>
         <Divider />
         <DialogContent>
           <EditDefectPriorityForm onFinish={handleEditClose} id={id} />
@@ -99,7 +99,9 @@ export default function DefectPriorityCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"xs"}
       >
-        <DialogTitle id="delete-priority-title">Delete Priority</DialogTitle>
+        <DialogTitle id="delete-priority-title">
+          Delete Defect Priority
+        </DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

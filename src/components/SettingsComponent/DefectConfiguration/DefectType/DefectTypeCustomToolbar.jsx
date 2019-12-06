@@ -53,7 +53,7 @@ export default function DefectTypeCustomToolbar({ onCreate }) {
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="add-type-title">Add Type</DialogTitle>
+        <DialogTitle id="add-type-title">Add Defect Type</DialogTitle>
         <Divider />
         <DialogContent>
           <AddDefectTypeForm onFinish={handleAddClose} />

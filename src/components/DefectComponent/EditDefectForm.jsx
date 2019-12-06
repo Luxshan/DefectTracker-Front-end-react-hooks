@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -10,6 +10,8 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
 import { Link } from "react-router-dom";
+import Axios from "axios";
+import { useLocation } from "react-router";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -63,21 +65,172 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const divStyle = {
+  marginRight: "50px",
+  marginLeft: "50px",
+  marginTop: "20px"
+};
+
 export default function EditDefectForm() {
+  window.onbeforeunload = function() {
+    return false;
+  };
+
   const classes = useStyles();
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
-  const [value, setValue] = React.useState("");
+  let location = useLocation();
+  let id = location.edit.id();
+  const [severities, setSeverities] = React.useState([]);
+  const [priorities, setPriorities] = React.useState([]);
+  const [types, setTypes] = React.useState([]);
+  const [statuses, setStatuses] = React.useState([]);
+  const [showResult, setShowResult] = React.useState("");
+  const [message, setMessage] = React.useState("");
+  const [upload, setUpload] = React.useState(false);
+  const [values, setValues] = React.useState({
+    name: "",
+    description: "",
+    projectId: "",
+    moduleId: "",
+    submoduleId: "",
+    typeId: "",
+    severityId: "",
+    priorityId: "",
+    statusId: "",
+    attachment: "",
+    stepsToCreate: "",
+    foundIn: "",
+    fixedIn: "",
+    assignedTo: "",
+    assignedBy: "",
+    createdBy: "",
+    createdOn: "",
+    updatedBy: ""
+  });
 
-  const handleChange = event => {
-    setValue(event.target.value);
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  useEffect(() => {
+    Axios.get(`http://localhost:8087/api/v1/defect/${id}`)
+      .then(response => {
+        console.log(response);
+        let result = response.data.results.listDefect;
+        updateData(result);
+      })
+      .catch(error => {
+        console.log(error);
+        setShowResult("alert alert-danger");
+        setMessage("Failed to Retrive Data!!");
+      });
+  }, [id]);
+
+  const updateData = data => {
+    setValues({
+      id: data.id,
+      name: data.name,
+      description: data.description,
+      projectId: data.projectId,
+      moduleId: data.moduleId,
+      submoduleId: data.submoduleId,
+      typeId: data.typeId,
+      severityId: data.severityId,
+      priorityId: data.priorityId,
+      statusId: data.statusId,
+      attachment: data.attachment,
+      stepsToCreate: data.stepsToCreate,
+      foundIn: data.foundIn,
+      fixedIn: data.fixedIn,
+      assignedTo: data.assignedTo,
+      assignedBy: "1",
+      createdBy: data.createdBy,
+      createdOn: data.createdOn,
+      updatedBy: "1"
+    });
+  };
+
+  useEffect(() => {
+    Axios.get("http://localhost:8087/api/v1/severity")
+      .then(response => {
+        console.log(response);
+        setSeverities(response.data.results.listAllSeverity);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    Axios.get("http://localhost:8087/api/v1/priority")
+      .then(response => {
+        console.log(response);
+        setPriorities(response.data.results.listAllPriority);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    Axios.get("http://localhost:8087/api/v1/type")
+      .then(response => {
+        console.log(response);
+        setTypes(response.data.results.listAllType);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    Axios.get("http://localhost:8087/api/v1/status")
+      .then(response => {
+        console.log(response);
+        setStatuses(response.data.results.listAllStatus);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  const encodeImageFileAsURL = e => {
+    var file = e.target.files[0];
+    var reader = new FileReader();
+    reader.onloadend = function() {
+      console.log("RESULT", reader.result);
+      values.attachment = reader.result;
+      setUpload(true);
+    };
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    Axios.put(`http://localhost:8087/api/v1/defect`, values)
+      .then(response => {
+        console.log(response);
+        setShowResult("alert alert-success");
+        setMessage(response.data.message);
+      })
+      .catch(error => {
+        console.log(error);
+        setShowResult("alert alert-danger");
+        setMessage("Failed to Update!!");
+      });
   };
 
   return (
     <div>
+      <div style={divStyle} className={showResult} role="alert">
+        {message}
+      </div>
       <Container className={classes.container}>
         <Paper
           className={classes.paper}
@@ -85,7 +238,11 @@ export default function EditDefectForm() {
             Container: props => <Paper {...props} elevation={4} />
           }}
         >
-          <form className={classes.container} autoComplete="off">
+          <form
+            className={classes.container}
+            autoComplete="off"
+            onSubmit={handleSubmit}
+          >
             <Grid container direction="column" alignItems="center">
               <div>
                 <TextField
@@ -93,6 +250,8 @@ export default function EditDefectForm() {
                   id="defect-name"
                   label="Defect Name"
                   className={classes.textField}
+                  value={values.name}
+                  onChange={handleChange("name")}
                   margin="normal"
                   variant="outlined"
                 />
@@ -104,12 +263,12 @@ export default function EditDefectForm() {
                   <Select
                     id="project-name"
                     labelWidth={labelWidth}
-                    value={value}
-                    onChange={handleChange}
+                    value={values.projectId}
+                    onChange={handleChange("projectId")}
                   >
-                    <MenuItem value="CMS">CMS</MenuItem>
-                    <MenuItem value="LMS">LMS</MenuItem>
-                    <MenuItem value="SIS">SIS</MenuItem>
+                    <MenuItem value="1">CMS</MenuItem>
+                    <MenuItem value="2">LMS</MenuItem>
+                    <MenuItem value="3">SIS</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -119,12 +278,12 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="module-name"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.moduleId}
+                    onChange={handleChange("moduleId")}
                   >
-                    <MenuItem value="Left Drawer">Left Drawer</MenuItem>
-                    <MenuItem value="Header">Header</MenuItem>
-                    <MenuItem value="Footer">Footer</MenuItem>
+                    <MenuItem value="1">Left Drawer</MenuItem>
+                    <MenuItem value="2">Header</MenuItem>
+                    <MenuItem value="3">Footer</MenuItem>
                   </Select>
                 </FormControl>
               </div>
@@ -135,11 +294,11 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="submodule-name"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.submoduleId}
+                    onChange={handleChange("submoduleId")}
                   >
-                    <MenuItem value="Menu Item">Menu Item</MenuItem>
-                    <MenuItem value="Search Bar">Search Bar</MenuItem>
+                    <MenuItem value="1">Menu Item</MenuItem>
+                    <MenuItem value="2">Search Bar</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -149,11 +308,14 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="defect-type"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.typeId}
+                    onChange={handleChange("typeId")}
                   >
-                    <MenuItem value="UI">UI</MenuItem>
-                    <MenuItem value="Function">Function</MenuItem>
+                    {types.map((type, i) => (
+                      <MenuItem key={i} value={type.id}>
+                        {type.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
@@ -163,12 +325,14 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="defect-severity"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.severityId}
+                    onChange={handleChange("severityId")}
                   >
-                    <MenuItem value="High">High</MenuItem>
-                    <MenuItem value="Medium">Medium</MenuItem>
-                    <MenuItem value="Low">Low</MenuItem>
+                    {severities.map((severity, i) => (
+                      <MenuItem key={i} value={severity.id}>
+                        {severity.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -179,12 +343,14 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="defect-priority"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.priorityId}
+                    onChange={handleChange("priorityId")}
                   >
-                    <MenuItem value="High">High</MenuItem>
-                    <MenuItem value="Medium">Medium</MenuItem>
-                    <MenuItem value="Low">Low</MenuItem>
+                    {priorities.map((priority, i) => (
+                      <MenuItem key={i} value={priority.id}>
+                        {priority.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
 
@@ -194,12 +360,12 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="assigned-to"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.assignedTo}
+                    onChange={handleChange("assignedTo")}
                   >
-                    <MenuItem value="U-2541">U-2541</MenuItem>
-                    <MenuItem value="U-2548">U-2548</MenuItem>
-                    <MenuItem value="U-2556">U-2556</MenuItem>
+                    <MenuItem value="1">Balasankar</MenuItem>
+                    <MenuItem value="2">Sinthujan</MenuItem>
+                    <MenuItem value="3">Jeyaruban</MenuItem>
                   </Select>
                 </FormControl>
 
@@ -209,15 +375,14 @@ export default function EditDefectForm() {
                   </InputLabel>
                   <Select
                     id="defect-status"
-                    value={value}
-                    onChange={handleChange}
+                    value={values.statusId}
+                    onChange={handleChange("statusId")}
                   >
-                    <MenuItem value="New">New</MenuItem>
-                    <MenuItem value="Open">Open</MenuItem>
-                    <MenuItem value="Fixed">Fixed</MenuItem>
-                    <MenuItem value="Rejected">Rejected</MenuItem>
-                    <MenuItem value="Re-Opened">Re-Opened</MenuItem>
-                    <MenuItem value="Closed">Closed</MenuItem>
+                    {statuses.map((status, i) => (
+                      <MenuItem key={i} value={status.id}>
+                        {status.name}
+                      </MenuItem>
+                    ))}
                   </Select>
                 </FormControl>
               </div>
@@ -227,6 +392,8 @@ export default function EditDefectForm() {
                   id="found-in"
                   label="Found In"
                   className={classes.textField}
+                  value={values.foundIn}
+                  onChange={handleChange("foundIn")}
                   margin="normal"
                   variant="outlined"
                 />
@@ -235,6 +402,8 @@ export default function EditDefectForm() {
                   id="fixed-in"
                   label="Fixed In"
                   className={classes.textField}
+                  value={values.fixedIn}
+                  onChange={handleChange("fixedIn")}
                   margin="normal"
                   variant="outlined"
                 />
@@ -242,6 +411,7 @@ export default function EditDefectForm() {
                   accept="image/*"
                   className={classes.input}
                   id="defect-screenshot"
+                  onChange={e => encodeImageFileAsURL(e)}
                   multiple
                   type="file"
                 />
@@ -251,7 +421,7 @@ export default function EditDefectForm() {
                     component="span"
                     className={classes.buttonUpload}
                   >
-                    Upload Screenshot
+                    {upload ? "Uploaded" : "Upload Screenshot"}
                   </Button>
                 </label>
               </div>
@@ -263,6 +433,8 @@ export default function EditDefectForm() {
                   multiline
                   rows="2"
                   className={classes.descField}
+                  value={values.description}
+                  onChange={handleChange("description")}
                   margin="normal"
                   variant="outlined"
                 />
@@ -273,6 +445,8 @@ export default function EditDefectForm() {
                   multiline
                   rows="2"
                   className={classes.descField}
+                  value={values.stepsToCreate}
+                  onChange={handleChange("stepsToCreate")}
                   margin="normal"
                   variant="outlined"
                 />
@@ -285,14 +459,13 @@ export default function EditDefectForm() {
                 component={Link}
                 to={"/manage-defect"}
               >
-                Cancel
+                Back
               </Button>
               <Button
+                type="submit"
                 className={classes.button}
                 variant="contained"
                 color="primary"
-                component={Link}
-                to={"/manage-defect"}
               >
                 Update
               </Button>

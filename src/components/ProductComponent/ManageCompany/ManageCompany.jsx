@@ -66,28 +66,6 @@ const columns = [
   }
 ];
 
-// const data = [
-//   {
-//     CompanyName: "Samuel Gnanam IT Centre",
-//     Email: "admin@sgic.com",
-//     LicenseType: "Platinum",
-//     LicenseStart: "12-03-2019",
-//     LicenseExpire: "12-03-2024"
-//   }
-// ];
-
-// const options = {
-//   filterType: "checkbox",
-//   selectableRows: "single",
-//   selectableRowsOnClick: true,
-//   responsive: "scrollMaxHeight",
-//   customToolbar: () => {
-//     return <CompanyCustomToolbar />;
-//   },
-//   customToolbarSelect: () => {
-//     return <CompanyCustomToolbarSelect />;
-//   }
-// };
 
 export default function ManageCompany() {
   const classes = useStyles();
@@ -100,7 +78,7 @@ export default function ManageCompany() {
   const [values] = React.useState({
     id: ""
   });
-
+  
   const handleTrackAdd = () => {
     setTrackAdd(!trackAdd);
   };
@@ -117,7 +95,7 @@ export default function ManageCompany() {
     return values.id;
     
   };
-
+  console.log(getId);
   useEffect(() => {
     Axios.get("http://localhost:8080/company")
       .then(response => {
@@ -150,6 +128,7 @@ export default function ManageCompany() {
           onDelete={handleDelete}
           onEdit={handleTrackEdit}
           id={getId}
+          // id={values.id}
         />
       );
     },
@@ -158,6 +137,7 @@ export default function ManageCompany() {
         const dataRow = company[row.dataIndex];
         values.id = dataRow["id"];
         console.log(values.id);
+        
       });
     }
   };

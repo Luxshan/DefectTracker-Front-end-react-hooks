@@ -56,7 +56,7 @@ export default function DefectSeverityCustomToolbar({ onCreate }) {
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="add-severity-title">Add Severity</DialogTitle>
+        <DialogTitle id="add-severity-title">Add Defect Severity</DialogTitle>
         <Divider />
         <DialogContent>
           <AddDefectSeverityForm onFinish={handleAddClose} />

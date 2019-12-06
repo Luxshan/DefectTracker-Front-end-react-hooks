@@ -13,6 +13,11 @@
     "chart.js": "^2.9.0",
     "core-js": "^3.3.5",
     "date-fns": "^2.6.0",
+<<<<<<< HEAD
+    "json-query": "^2.2.2",
+=======
+    "lightbox2": "^2.11.1",
+>>>>>>> 8661c94a6b5be7d7000e050a00ad1ddacfd365ee
     "lodash": "^4.17.15",
     "mui-datatables": "^2.12.4",
     "react": "^16.11.0",

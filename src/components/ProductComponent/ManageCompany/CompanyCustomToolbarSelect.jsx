@@ -33,6 +33,7 @@ export default function CompanyCustomToolbarSelect({
     onEdit,
     onDelete
 }) {
+  console.log(id + "dsv");
   const classes = useStyles();
   const [openView, setOpenView] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
@@ -87,7 +88,7 @@ export default function CompanyCustomToolbarSelect({
         <DialogTitle id="view-project-title">View Company</DialogTitle>
         <Divider />
         <DialogContent>
-          <ViewCompanyForm />
+          <ViewCompanyForm id={id}/>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleViewClose} color="primary">
@@ -103,8 +104,12 @@ export default function CompanyCustomToolbarSelect({
           className={classes.fab}
           size="small"
           component={Link}
-          to={"/product-administration/manage-company/edit-company"}
+          // to={"/product-administration/manage-company/edit-company"}
           // onClick={handleEditOpen}
+          to={{
+            pathname: "/product-administration/manage-company/edit-company",
+            edit: { id }
+          }}
         >
           <EditIcon />
         </Fab>

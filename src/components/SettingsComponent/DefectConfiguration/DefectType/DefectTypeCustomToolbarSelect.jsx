@@ -73,7 +73,7 @@ export default function DefectTypeCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="edit-type-title">Edit Type</DialogTitle>
+        <DialogTitle id="edit-type-title">Edit Defect Type</DialogTitle>
         <Divider />
         <DialogContent>
           <EditDefectTypeForm onFinish={handleEditClose} id={id} />
@@ -99,7 +99,7 @@ export default function DefectTypeCustomToolbarSelect({
         fullWidth={true}
         maxWidth={"xs"}
       >
-        <DialogTitle id="delete-type-title">Delete Type</DialogTitle>
+        <DialogTitle id="delete-type-title">Delete Defect Type</DialogTitle>
         <Divider />
         <DialogContent>
           <DialogContentText id="alert-dialog-description">

@@ -53,7 +53,7 @@ export default function DefectPriorityCustomToolbar({ onCreate }) {
         fullWidth={true}
         maxWidth={"sm"}
       >
-        <DialogTitle id="add-priority-title">Add Priority</DialogTitle>
+        <DialogTitle id="add-priority-title">Add Defect Priority</DialogTitle>
         <Divider />
         <DialogContent>
           <AddDefectPriorityForm onFinish={handleAddClose} />

@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function DefectCustomToolbarSelect() {
+export default function DefectCustomToolbarSelect({ id, onDelete }) {
   const classes = useStyles();
   const [openView, setOpenView] = React.useState(false);
   const [openDelete, setOpenDelete] = React.useState(false);
@@ -73,7 +73,7 @@ export default function DefectCustomToolbarSelect() {
         <DialogTitle id="view-project-title">View Defect</DialogTitle>
         <Divider />
         <DialogContent>
-          <ViewDefectForm />
+          <ViewDefectForm id={id} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleViewClose} color="primary">
@@ -89,7 +89,10 @@ export default function DefectCustomToolbarSelect() {
           className={classes.fab}
           size="small"
           component={Link}
-          to={"/manage-defect/edit-defect"}
+          to={{
+            pathname: "/manage-defect/edit-defect",
+            edit: { id }
+          }}
         >
           <EditIcon />
         </Fab>
@@ -125,11 +128,7 @@ export default function DefectCustomToolbarSelect() {
           <Button onClick={handleDeleteClose} color="primary">
             Cancel
           </Button>
-          <Button
-            variant="contained"
-            onClick={handleDeleteClose}
-            color="primary"
-          >
+          <Button variant="contained" onClick={onDelete} color="primary">
             Delete
           </Button>
         </DialogActions>

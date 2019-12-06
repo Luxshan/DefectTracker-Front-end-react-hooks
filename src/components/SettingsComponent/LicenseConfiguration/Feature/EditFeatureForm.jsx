@@ -4,7 +4,6 @@ import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Axios from "axios";
-
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
@@ -40,9 +39,12 @@ const divStyle = {
 };
 
 export default function EditFeatureForm({ id, onFinish }) {
+
+
   const classes = useStyles();
   const [values, setValues] = React.useState({
-    id: 1,  //manual value... need to get id from featureCustomToolbarSelect
+   
+    id:"",
     featureName: "",
     featureDescription: ""
   });
@@ -50,8 +52,8 @@ export default function EditFeatureForm({ id, onFinish }) {
   const [showResult, setShowResult] = React.useState("");
   const [message, setMessage] = React.useState("");
   useEffect(() => {
-    console.log(values.id); // issue getting the id
-    Axios.get(`http://localhost:8080/feature/${values.id}`)
+    console.log(values.id); 
+    Axios.get(`http://localhost:8080/feature/${id()}`)
       .then(response => {
         console.log(response);
         let result = response.data;

@@ -25,7 +25,8 @@ const columns = [
     label: "Id",
     options: {
       filter: true,
-      sort: true
+      sort: true,
+      display: false
     }
   },
   {

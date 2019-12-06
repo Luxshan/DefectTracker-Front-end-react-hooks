@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -10,12 +10,13 @@ import "date-fns";
 import Paper from "@material-ui/core/Paper";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
-
+import Axios from "axios";
 import DateFnsUtils from "@date-io/date-fns";
 import {
   MuiPickersUtilsProvider,
   KeyboardDatePicker
 } from "@material-ui/pickers";
+import { useLocation } from "react-router";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -74,61 +75,160 @@ const useStyles = makeStyles(theme => ({
     width: "230px"
   }
 }));
-export default function AddCompanyForm() {
+const divStyle = {
+  marginRight: "50px",
+  marginLeft: "50px",
+  marginTop: "20px"
+};
+
+export default function EditCompanyForm() {
+  window.onbeforeunload = function() {
+    return false;
+  };
+  //console.log(id);
+  let location = useLocation();
+  let id = location.edit.id();
+  //console.log(id);
+  
   const classes = useStyles();
   const inputLabel = React.useRef(null);
   const [labelWidth, setLabelWidth] = React.useState(0);
   React.useEffect(() => {
     setLabelWidth(inputLabel.current.offsetWidth);
   }, []);
+  
+  const [licenses, setLicenseType] = React.useState([]);
   const [selectedDate, setSelectedDate] = React.useState(
     new Date("2019-10-24T21:11:54")
   );
-  const [value, setValue] = React.useState("");
+  const [values, setValues] = React.useState({
+    companyName: "",
+    email: "",
+    abbreviation: "",
+    regNo: "",
+    contactPerson: "",
+    contactNo: "",
+    licenseStartDate: "",
+    licenseExpiryDate: "",
+    adminName: "",
+    adminEmail: "",
+    userName: "",
+    password: "",
+    license: {}
+  });
+  const handleChange = name => event => {
+    setValues({ ...values, [name]: event.target.value });
+  };
+
+  useEffect(() => {
+    Axios.get("http://localhost:8080/license")
+      .then(response => {
+        console.log(response.data);
+        setLicenseType(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }, []);
+
+  
+
+  useEffect(() => {
+    Axios.get(`http://localhost:8080/company/${id}`)
+      .then(response => {
+        console.log(response);
+        updateData(response.data);
+      })
+      .catch(error => {
+        console.log(error);
+        // setShowResult("alert alert-danger");
+        // setMessage("Failed to Retrive Data!!");
+      });
+  }, [id]);
 
   const handleDateChange = date => {
     setSelectedDate(date);
   };
 
-  const handleChange = event => {
-    setValue(event.target.value);
+  const updateData = data => {
+    setValues({
+      id: data.id,
+      companyName: data.companyName,
+      email: data.email,
+      abbreviation: data.abbreviation,
+      regNo: data.regNo,
+      contactPerson: data.contactPerson,
+      contactNo: data.contactNo,
+      licenseStartDate: data.licenseStartDate,
+      licenseExpiryDate: data.licenseExpiryDate,
+      adminName: data.adminName,
+      adminEmail: data.adminEmail,
+      userName: data.userName,
+      password: data.password,
+      license: data.license
+      });
+  };
+
+  const handleSubmit = event => {
+    event.preventDefault();
+    Axios.put(`http://localhost:8080/company/${id}`, values)
+      .then(response => {
+        console.log(response);
+        
+        // setShowResult("alert alert-success");
+        // setMessage(response.data.message);
+      })
+      .catch(error => {
+        console.log(error);
+        // setShowResult("alert alert-danger");
+        // setMessage("Failed to Update!!");
+      });
   };
 
   return (
     <div>
+      <div style={divStyle} role="alert">
+        
+      </div>
       <Paper
         className={classes.paper}
         components={{
           Container: props => <Paper {...props} elevation={4} />
         }}
       >
-        <form className={classes.container} autoComplete="off">
+        <form className={classes.container} autoComplete="off" onSubmit={handleSubmit}>
           <Grid container direction="column" alignItems="center">
             <div>
               <TextField
-                required
-                id="company-name"
-                label="Company Name"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                required
-                id="abbreviation"
-                label="Abbreviation"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
-              <TextField
-                required
-                id="reg-no"
-                label="Reg No"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
+                  required
+                  id="company-name"
+                  label="Company Name"
+                  className={classes.textField}
+                  value={values.companyName}
+                  onChange={handleChange("companyName")}
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  required
+                  id="abbreviation"
+                  label="Abbreviation"
+                  className={classes.textField}
+                  value={values.abbreviation}
+                  onChange={handleChange("abbreviation")}
+                  margin="normal"
+                  variant="outlined"
+                />
+                <TextField
+                  required
+                  id="reg-no"
+                  label="Reg No"
+                  className={classes.textField}
+                  value={values.regNo}
+                  onChange={handleChange("regNo")}
+                  margin="normal"
+                  variant="outlined"
+                />
             </div>
 
             <div>
@@ -138,6 +238,8 @@ export default function AddCompanyForm() {
                 id="cpmpany-email"
                 label="Company Email"
                 className={classes.textField}
+                value={values.email}
+                onChange={handleChange("email")}
                 margin="normal"
                 variant="outlined"
               />
@@ -147,6 +249,8 @@ export default function AddCompanyForm() {
                 id="contact-person"
                 label="Contact Person"
                 className={classes.textField}
+                value={values.contactPerson}
+                onChange={handleChange("contactPerson")}
                 margin="normal"
                 variant="outlined"
               />
@@ -156,81 +260,93 @@ export default function AddCompanyForm() {
                 id="contact-no"
                 label="Contact No"
                 className={classes.textField}
+                value={values.contactNo}
+                onChange={handleChange("contactNo")}
                 margin="normal"
                 variant="outlined"
               />
             </div>
 
             <div>
-              <FormControl required className={classes.formControl}>
-                <InputLabel ref={inputLabel} htmlFor="defect-severity">
-                  License Type
-                </InputLabel>
-                <Select
-                  labelWidth={labelWidth}
-                  value={value}
-                  onChange={handleChange}
-                >
-                  <MenuItem value="Platinum">Platinum</MenuItem>
-                  <MenuItem value="Gold">Gold</MenuItem>
-                  <MenuItem value="Silver">Silver</MenuItem>
-                  <MenuItem value="Bronze">Bronze</MenuItem>
-                </Select>
-              </FormControl>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
+            <FormControl required className={classes.formControl}>
+                  <InputLabel ref={inputLabel} htmlFor="defect-severity">
+                    License Type
+                  </InputLabel>
+                  <Select
+                    labelWidth={labelWidth}
+                    value= {values.license}
+                    onChange={handleChange("license")}
+                  >
+
+                    {licenses.map((lice, i) => (
+                      <MenuItem key={i} value={lice}>
+                        {lice.licenseName}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <KeyboardDatePicker
+                    margin="normal"
+                    id="start-date"
+                    label="Start Date"
+                    className={classes.dateField}
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                    format="MM/dd/yyyy"
+                    KeyboardButtonProps={{
+                      "aria-label": "change date"
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+
+                <TextField
+                  required
+                  id="admin-name"
+                  label="Admin Name"
+                  className={classes.textField}
+                  value={values.adminName}
+                  onChange={handleChange("adminName")}
                   margin="normal"
-                  id="start-date"
-                  label="Start Date"
-                  className={classes.dateField}
-                  value={selectedDate}
-                  onChange={handleDateChange}
-                  format="MM/dd/yyyy"
-                  KeyboardButtonProps={{
-                    "aria-label": "change date"
-                  }}
+                  variant="outlined"
                 />
-              </MuiPickersUtilsProvider>
-
-              <TextField
-                required
-                id="admin-name"
-                label="Admin Name"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
             </div>
 
             <div>
               <TextField
-                required
-                type="email"
-                id="admin-email"
-                label="Admin Email"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
+                  required
+                  type="email"
+                  id="admin-email"
+                  label="Admin Email"
+                  className={classes.textField}
+                  value={values.adminEmail}
+                  onChange={handleChange("adminEmail")}
+                  margin="normal"
+                  variant="outlined"
+                />
 
-              <TextField
-                required
-                id="admin-username"
-                label="Admin Username"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
+                <TextField
+                  required
+                  id="admin-username"
+                  label="Admin Username"
+                  className={classes.textField}
+                  value={values.userName}
+                  onChange={handleChange("userName")}
+                  margin="normal"
+                  variant="outlined"
+                />
 
-              <TextField
-                required
-                type="password"
-                id="admin-password"
-                label="Admin Password"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-              />
+                <TextField
+                  required
+                  type="password"
+                  id="admin-password"
+                  label="Admin Password"
+                  className={classes.textField}
+                  value={values.password}
+                  onChange={handleChange("password")}
+                  margin="normal"
+                  variant="outlined"
+                />
             </div>
           </Grid>
           <Grid container justify="flex-end">
@@ -243,11 +359,11 @@ export default function AddCompanyForm() {
               Cancel
             </Button>
             <Button
+              type="submit"
               className={classes.button}
               variant="contained"
               color="primary"
-              component={Link}
-              to={"/product-administration/manage-company"}
+            
             >
               Update
             </Button>

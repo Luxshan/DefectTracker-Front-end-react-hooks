@@ -104,7 +104,7 @@ export default function EditDefectPriorityForm({ id, onFinish }) {
           <TextField
             required
             id="priority-name"
-            label="Priority"
+            label="Defect Priority"
             className={classes.textField}
             value={values.name}
             onChange={handleChange("name")}
@@ -114,7 +114,7 @@ export default function EditDefectPriorityForm({ id, onFinish }) {
           <TextField
             required
             id="priority-desc"
-            label="Description"
+            label="Priority Description"
             className={classes.textField}
             value={values.description}
             onChange={handleChange("description")}

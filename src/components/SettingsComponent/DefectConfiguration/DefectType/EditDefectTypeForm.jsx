@@ -104,7 +104,7 @@ export default function EditDefectTypeForm({ id, onFinish }) {
           <TextField
             required
             id="type-name"
-            label="Type"
+            label="Defect Type"
             className={classes.textField}
             value={values.name}
             onChange={handleChange("name")}
@@ -114,7 +114,7 @@ export default function EditDefectTypeForm({ id, onFinish }) {
           <TextField
             required
             id="type-desc"
-            label="Description"
+            label="Type Description"
             className={classes.textField}
             value={values.description}
             onChange={handleChange("description")}
